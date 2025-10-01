@@ -15,3 +15,4 @@ with open('myfile.txt', 'r+') as f: #the file must exist for this r+ method, can
     f.seek(10)
     print(f.read())
 
+
