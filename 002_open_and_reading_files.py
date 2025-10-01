@@ -1,3 +1,5 @@
+# OPENING AND READING FILES
+
 f = open('configuration.txt', 'rt')
 content = f.read()
 print(content)

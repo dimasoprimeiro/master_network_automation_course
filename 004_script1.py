@@ -1,0 +1,1 @@
+f = open('../settings.txt')
