@@ -10,27 +10,48 @@ ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
 password = getpass.getpass('poe a senha ai seu animal: ')
 
-router = {
+router1 = {
+    'hostname': '192.168.0.159',
+    'port': 22,
+    'username': 'cisco',
+    'password': password
+}
+
+router2 = {
     'hostname': '192.168.0.114',
     'port': 22,
     'username': 'cisco',
     'password': password
 }
-print(f'Connecting to {router['hostname']}')
-ssh_client.connect(**router, look_for_keys=False, allow_agent=False)
 
-#enviando e coletando comandos para o equipamento
-shell = ssh_client.invoke_shell()# invoka o shell do equipamento
+router3 = {
+    'hostname': '192.168.0.220',
+    'port': 22,
+    'username': 'cisco',
+    'password': password
+}
 
-shell.send('ter len 0\n')
-shell.send('show version\n')
-shell.send('show ip int bri\n')
-time.sleep(1)# dar tempo para o shell do equipamento
+routers = [router1, router2, router3]
 
-output = shell.recv(10000)
-# print(type(output))
-output = output.decode('utf-8') #mudar o tipo de dado
-print(output)
+for router in routers:
+
+    print(f'Connecting to {router['hostname']}')
+    ssh_client.connect(**router, look_for_keys=False, allow_agent=False)
+
+    #enviando e coletando comandos para o equipamento
+    shell = ssh_client.invoke_shell()# invoka o shell do equipamento
+
+
+    shell.send('conf t\n')
+    shell.send('router ospf 1 \n')
+    shell.send('network 0.0.0.0 0.0.0.0 area 0\n')
+    shell.send('end\n')
+    shell.send('ter len 0\n')
+    shell.send('sh ip protocols\n')
+    time.sleep(2)# dar tempo para o shell do equipamento
+
+    output = shell.recv(10000).decode()
+    print(output)
 
 
 #fechando conexão
